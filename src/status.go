@@ -1,14 +1,14 @@
 package main
 
 import (
-	"euler"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 )
 
 const (
-	path   = "../eulerdata/status.html"
+	path   = "/home/frederick/Projects/project-euler/eulerdata/status.html"
 	prizes = 5
 )
 
@@ -240,6 +240,45 @@ func smash(a, sep, b string) (smoosh string) {
 
 var max int = -1 //number of problems total
 
+func isPrime(n int) bool {
+	for i := 2; i < n; i++ {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+//stolen from euler.Import
+func inWrapper(filename string) []string {
+
+	// read whole the file
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	var output []string
+
+	currentline := ""
+
+	for _, char := range b {
+		if char == 10 {
+			output = append(output, currentline)
+			currentline = ""
+		} else {
+			currentline += string(char)
+		}
+	}
+
+	if currentline != "" {
+		output = append(output, currentline)
+	}
+
+	return output
+
+}
+
 func main() {
 
 	//PRIME NUMBERS (Index = 0)
@@ -247,10 +286,10 @@ func main() {
 		set = make(map[int]bool)
 		for i := 1; i <= max; i++ {
 			if dict[i] {
-				if euler.IsPrime(int64(i)) {
+				if isPrime(i) {
 					ans++
 				}
-			} else if euler.IsPrime(int64(i)) {
+			} else if isPrime(i) {
 				set[i] = true
 			}
 		}
@@ -334,7 +373,7 @@ func main() {
 
 	lineL := 40
 
-	page := euler.Import(path)
+	page := inWrapper(path)
 
 	dict := make(map[int]bool)
 	difficulty := make(map[int]int)
