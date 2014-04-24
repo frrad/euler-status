@@ -5,19 +5,23 @@ import (
 )
 
 const (
-	PATH       = "/home/frederick/Projects/project-euler/eulerdata/status.html"
-	LINEL      = 20
+	PATH  = "/home/frederick/Projects/project-euler/eulerdata/status.html"
+	LINEL = 20
+)
+
+var (
+	MAX    int = -1 //number of problems total
 	EASY   int = 1000
 	MEDIUM int = 500
 )
-
-var MAX int = -1 //number of problems total
 
 var totals [prizes]int
 
 func main() {
 	temp, dict, difficulty := parseHTML(PATH)
 	MAX = temp
+
+	colorThreshold(dict, difficulty)
 
 	for i := 0; i < prizes; i++ {
 		totals[i], _ = prizeFns[i](dict)

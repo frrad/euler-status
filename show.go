@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -17,6 +18,21 @@ func show(set map[int]bool, howHard map[int]int) string {
 		}
 	}
 	return ans
+}
+
+func colorThreshold(dict map[int]bool, difficulty map[int]int) {
+	list := []int{}
+	for i := 1; i <= MAX; i++ {
+		if !dict[i] {
+			list = append(list, difficulty[i])
+		}
+	}
+	sort.Ints(list)
+
+	MEDIUM = list[len(list)/3]
+	EASY = list[2*len(list)/3]
+	fmt.Printf("easy: %d medium: %d\n", EASY, MEDIUM)
+
 }
 
 func colorize(text string, score int) string {
