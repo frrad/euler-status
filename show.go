@@ -31,8 +31,6 @@ func colorThreshold(dict map[int]bool, difficulty map[int]int) {
 
 	MEDIUM = list[len(list)/3]
 	EASY = list[2*len(list)/3]
-	fmt.Printf("easy: %d medium: %d\n", EASY, MEDIUM)
-
 }
 
 func colorize(text string, score int) string {
