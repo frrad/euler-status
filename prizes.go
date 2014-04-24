@@ -2,8 +2,6 @@ package main
 
 const prizes = 5
 
-var totals [prizes]int
-
 var names = [prizes]string{
 	"Prime Obsession",
 	"Triangle Trophy",
@@ -32,7 +30,7 @@ var prizeFns [](func(map[int]bool) (int, map[int]bool)) = [](func(map[int]bool) 
 	//PRIME OBSESSION (Index = 0)
 	func(dict map[int]bool) (ans int, set map[int]bool) {
 		set = make(map[int]bool)
-		for i := 1; i <= max; i++ {
+		for i := 1; i <= MAX; i++ {
 			if dict[i] {
 				if isPrime(i) {
 					ans++
@@ -60,12 +58,13 @@ var prizeFns [](func(map[int]bool) (int, map[int]bool)) = [](func(map[int]bool) 
 	//LUCKY NUMBER (Index = 2)
 	func(dict map[int]bool) (ans int, set map[int]bool) {
 		set = make(map[int]bool)
-		luckyseive := luckySeive(max)
-		for i := 0; i < len(luckyseive); i++ {
-			if dict[luckyseive[i]] {
+
+		seive := luckySeive(MAX)
+		for i := 0; i < len(seive); i++ {
+			if dict[seive[i]] {
 				ans++
 			} else {
-				set[luckyseive[i]] = true
+				set[seive[i]] = true
 			}
 		}
 		return
@@ -121,7 +120,7 @@ var prizeFns [](func(map[int]bool) (int, map[int]bool)) = [](func(map[int]bool) 
 }
 
 func luckySeive(max int) []int {
-	//fmt.Printf("Debug: %d\n", max)
+
 	luckyseive := make([]int, max)
 	for i := 0; i < max; i++ {
 		luckyseive[i] = i + 1

@@ -68,3 +68,38 @@ func howHard(text string) int {
 	fmt.Printf("ERROR: %s\n", err)
 	return 0
 }
+
+func parseHTML(path string) (max int, dict map[int]bool, difficulty map[int]int) {
+	dict = make(map[int]bool)
+	difficulty = make(map[int]int)
+
+	page := inWrapper(path)
+
+	for _, line := range page {
+		split := strings.Split(line, "class=\"problem")
+		for _, prob := range split {
+
+			if len(prob) >= 9 {
+				if prob[:7] == "_solved" {
+					//fmt.Printf("Debug (solved): %s\n", prob)
+					number := getNum(prob)
+					difficulty[number] = howHard(prob)
+					dict[number] = true
+					if number > max {
+						max = number
+					}
+
+				} else if prob[:9] == "_unsolved" {
+					number := getNum(prob)
+					difficulty[number] = howHard(prob)
+					if number > max {
+						max = number
+					}
+				}
+			}
+
+		}
+	}
+
+	return
+}

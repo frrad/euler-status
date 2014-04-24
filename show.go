@@ -8,7 +8,7 @@ import (
 
 func show(set map[int]bool, howHard map[int]int) string {
 	ans := ""
-	for i := 0; i < max; i++ {
+	for i := 0; i < MAX; i++ {
 		if set[i] {
 			ans += strconv.Itoa(i)
 			ans += "("
@@ -35,20 +35,20 @@ func colorize(text string, score int) string {
 //questions.
 func box(dict map[int]bool, lineL int) (picture string) {
 	done := 0
-	for i := 1; i <= max; i++ {
+	for i := 1; i <= MAX; i++ {
 		if dict[i] {
 			done++
 		}
 	}
 
-	picture += fmt.Sprintf("Done %d/%d problems\n", done, max)
+	picture += fmt.Sprintf("Done %d/%d problems\n", done, MAX)
 	picture += strings.Repeat("=", lineL)
 	picture += "\n"
 
-	for i := 1; i <= max; i++ {
+	for i := 1; i <= MAX; i++ {
 		if dict[i] {
 			picture += "X"
-		} else if i == max {
+		} else if i == MAX {
 			picture += "O"
 		} else {
 			picture += " "
@@ -58,7 +58,7 @@ func box(dict map[int]bool, lineL int) (picture string) {
 			picture += "\n"
 		}
 	}
-	if max%lineL != 0 {
+	if MAX%lineL != 0 {
 		picture += "\n"
 	}
 	picture += strings.Repeat("=", lineL)
@@ -66,10 +66,10 @@ func box(dict map[int]bool, lineL int) (picture string) {
 	return
 }
 
-//Histogram returns a histogram of the data in supplied list
-func histogram(dict map[int]bool, difficulty map[int]int, width int) (ans string) {
+//Histogram returns a histogram of the data in supplied list, given a slot width
+func histogramSlots(dict map[int]bool, difficulty map[int]int, width int) (ans string) {
 	list := []int{}
-	for i := 1; i <= max; i++ {
+	for i := 1; i <= MAX; i++ {
 		if !dict[i] {
 			list = append(list, difficulty[i])
 		}
@@ -95,6 +95,25 @@ func histogram(dict map[int]bool, difficulty map[int]int, width int) (ans string
 	}
 
 	return ans
+}
+
+//Returns a histogram of specified height (or smaller if not enough data)
+func histogramHeight(dict map[int]bool, difficulty map[int]int, howHigh int) (ans string) {
+	ans = histogramSlots(dict, difficulty, 1)
+
+	if height(ans) <= howHigh {
+		return
+	}
+
+	slotsize := 1
+	for ; height(ans) > howHigh; slotsize++ {
+		ans = histogramSlots(dict, difficulty, slotsize)
+	}
+	return
+}
+
+func height(a string) int {
+	return strings.Count(a, "\n")
 }
 
 //Given two objects, display a to left or b

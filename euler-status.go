@@ -2,55 +2,30 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
 const (
-	path       = "/home/frederick/Projects/project-euler/eulerdata/status.html"
-	lineL      = 40
+	PATH       = "/home/frederick/Projects/project-euler/eulerdata/status.html"
+	LINEL      = 20
 	EASY   int = 1000
 	MEDIUM int = 500
 )
 
-var max int = -1 //number of problems total
+var MAX int = -1 //number of problems total
+
+var totals [prizes]int
 
 func main() {
-	page := inWrapper(path)
-
-	dict := make(map[int]bool)
-	difficulty := make(map[int]int)
-
-	for _, line := range page {
-		split := strings.Split(line, "class=\"problem")
-		for _, prob := range split {
-
-			if len(prob) >= 9 {
-				if prob[:7] == "_solved" {
-					//fmt.Printf("Debug (solved): %s\n", prob)
-					number := getNum(prob)
-					difficulty[number] = howHard(prob)
-					dict[number] = true
-					if number > max {
-						max = number
-					}
-
-				} else if prob[:9] == "_unsolved" {
-					number := getNum(prob)
-					difficulty[number] = howHard(prob)
-					if number > max {
-						max = number
-					}
-				}
-			}
-
-		}
-	}
+	temp, dict, difficulty := parseHTML(PATH)
+	MAX = temp
 
 	for i := 0; i < prizes; i++ {
 		totals[i], _ = prizeFns[i](dict)
 	}
 
-	fmt.Println(smash(box(dict, lineL), " | ", histogram(dict, difficulty, 140)))
+	chart := box(dict, LINEL)
+	hist := histogramHeight(dict, difficulty, height(chart))
+	fmt.Println(smash(chart, "\t|\t", hist))
 
 	for i := 0; i < prizes; i++ {
 		fmt.Printf("%-20s %2d/%-2d %s\n", names[i], totals[i], goals[i], taglines[i])
@@ -58,9 +33,10 @@ func main() {
 
 	fmt.Print("\n")
 
+	//used to keep track of problem duplication in unfinished prizes
 	track := make(map[int]int)
 
-	for pNum := 1; pNum <= 4; pNum++ {
+	for pNum := 0; pNum < prizes; pNum++ {
 		if totals[pNum] < goals[pNum] {
 			_, set := prizeFns[pNum](dict)
 			fmt.Printf("%s: %s\n\n", names[pNum], show(set, difficulty))
@@ -72,11 +48,10 @@ func main() {
 		}
 	}
 
-	maxTrack := -1
+	maxTrack := -1 //highest frequency repetition
 
-	set := make(map[int]bool)
-
-	for i := 1; i <= max; i++ {
+	set := make(map[int]bool) //set of repeats
+	for i := 1; i <= MAX; i++ {
 		if track[i] > 1 {
 			set[i] = true
 		}
@@ -86,14 +61,15 @@ func main() {
 	}
 	fmt.Printf("Repeats: %s\n", show(set, difficulty))
 
-	set = make(map[int]bool)
-	for i := 1; i <= max; i++ {
-		if track[i] == maxTrack {
-			set[i] = true
+	if maxTrack > 2 { //if two or less, this is just the same as 'Repeats'
+		set = make(map[int]bool)
+		for i := 1; i <= MAX; i++ {
+			if track[i] == maxTrack {
+				set[i] = true
+			}
 		}
-	}
-	fmt.Printf("Most Repeated (%d): %s", maxTrack, show(set, difficulty))
 
-	fmt.Print("\n")
+		fmt.Printf("Most Repeated (%d): %s\n", maxTrack, show(set, difficulty))
+	}
 
 }
