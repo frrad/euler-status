@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	PATH  = "/home/frederick/Projects/project-euler/eulerdata/status.html"
+	PATH  = "/home/frederick/.euler-tools/status.html"
 	LINEL = 20
 )
 
